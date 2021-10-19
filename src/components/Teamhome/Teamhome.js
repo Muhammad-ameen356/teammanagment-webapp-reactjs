@@ -1,6 +1,7 @@
 import React from 'react'
 import teamcss from "./Teamhome.module.css"
-
+import AddIcon from '@mui/icons-material/Add';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 const Teamhome = () => {
     return (
         <div>
@@ -20,10 +21,10 @@ const Teamhome = () => {
                                     <p className={`info`} id="profileemail" />
                                     <p className={`${teamcss.info} text-muted`} id="username" />
                                     <hr />
-                                    <button className={`${teamcss.dropdownItem} ${teamcss.logoutBtn}`} type="button" onclick="logout()">Logout</button>
+                                    <button className={`${teamcss.dropdownItem} ${teamcss.logoutBtn}`} type="button" onClick="logout()">Logout</button>
                                 </div>
                             </div>
-                            {/* <button onclick="logout()" class="btn btn-danger bi-text-right">LogOut</button> */}
+                            {/* <button onClick="logout()" class="btn btn-danger bi-text-right">LogOut</button> */}
                         </section>
                         <section className={`text-center my-2`}>
                             <h4>Teams you own</h4>
@@ -31,12 +32,12 @@ const Teamhome = () => {
                         <div className={`${teamcss.secondContainer} container`} id="createElement">
                         </div>
                         <div className={`d-flex justify-content-end`}>
-                            <button type="button" onclick="showinputmodalbox()" className={`btn btn-dark text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                <i className="bi bi-plus-lg" />
+                            <button type="button" onClick="showinputmodalbox()" className={`btn btn-dark text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            <AddIcon />
                             </button>
                             &nbsp;&nbsp;&nbsp;
-                            <button type="button" ondblclick="deleteall()" className={`btn btn-dark text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} title="DoubleTap to delete">
-                                <i className="bi bi-trash" />
+                            <button type="button" onDoubleClick="deleteall()" className={`btn btn-dark text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} title="DoubleTap to delete">
+                                <DeleteForeverIcon/>
                             </button>
                         </div>
                         <hr />
@@ -48,7 +49,7 @@ const Teamhome = () => {
                     </fieldset>
                 </div>
                 {/* Button trigger modal */}
-                {/* <button type="button" class="btn btn-dark text-white shadow-remove" onclick="createteam()" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                {/* <button type="button" class="btn btn-dark text-white shadow-remove" onClick="createteam()" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
   Add
     </button> */}
                 {/* Modal */}
@@ -85,17 +86,17 @@ const Teamhome = () => {
                                         <p className={`text-muted`}>
                                             Seperated By comas (<b style={{ fontSize: '22px' }}>,</b>)
                                         </p>
-                                        {/* <button type="button" onclick="addmember()" class="btn btn-danger rounded-0 mt-3">
+                                        {/* <button type="button" onClick="addmember()" class="btn btn-danger rounded-0 mt-3">
                           Add Member
                       </button> */}
                                     </div>
                                 </form>
                             </div>
                             <div className={`modal-footer d-flex justify-content-center`}>
-                                <button type="button" id="createteamid" onclick="createteamdatastore(); createteam();" className={`btn btn-info text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-dismiss="modal">
+                                <button type="button" id="createteamid" onClick="createteamdatastore(); createteam();" className={`btn btn-info text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-dismiss="modal">
                                     Create
                                 </button>
-                                <button type="button" id="editteambutton" onclick="saveeditteam()" style={{ display: 'none' }} className={`btn btn-info text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-dismiss="modal">
+                                <button type="button" id="editteambutton" onClick="saveeditteam()" style={{ display: 'none' }} className={`btn btn-info text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-dismiss="modal">
                                     Edit
                                 </button>
                                 <button type="button" id="cancelbutton" className={`btn btn-warning text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-dismiss="modal">
