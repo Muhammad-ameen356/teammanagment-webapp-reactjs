@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import "../../App.css"
-import SignupCss from './Signup.module.css'
+import SignupCss from './Signup.module.css';
 import signUpimage from '../../images/team-image.jpg'
 import Firebaseconfig from '../Firebase/Firebaseconfig';
 import {Authentication} from '../Firebase/Authentication';
