@@ -1,43 +1,95 @@
 import React from 'react'
 import teamcss from "./Teamhome.module.css"
-import AddIcon from '@mui/icons-material/Add';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { getFirestore, collection, addDoc, doc, setDoc } from "firebase/firestore";
+import Firebaseconfig from '../Firebase/Firebaseconfig';
+
+
 const Teamhome = () => {
+    Firebaseconfig()
+    const db = getFirestore();
+
+    let teamname = "";
+    let teamcategory = "";
+    let teammember = "";
+
+    const teamName = (e) => {
+        teamname = e.target.value;
+    }
+    const teamCategory = (e) => {
+        teamcategory = e.target.value;
+    }
+    const teamMember = (e) => {
+        teammember = e.target.value;
+    }
+    const handleCreateTeam = async () => {
+        // console.log(teamname, teamcategory, teammember);
+        const date = new Date().getTime().toString();
+        console.log(date);
+        const commaseprate = teammember.split(',');
+        await setDoc(doc(db, "team", date), {
+            teamname: teamname,
+            teamcategory: teamcategory,
+            teammember: commaseprate,
+            docid: date,
+        }).then(() => {
+            console.log("Document successfully written!",);
+        }).catch((error) => {
+            console.error("Error writing document: ", error);
+        });
+    }
+
     return (
         <div>
-            <h1>Ameen</h1>
             <div className={`container`}>
                 <div className={`row`}>
                     <fieldset className={`${teamcss.mainborder}`}>
                         <legend className={`${teamcss.mainborder}`}>Teams</legend>
-                        <section className={`logout d-flex justify-content-between`}>
-                            <div className={`dropdown`}>
-                                <button className={`${teamcss.borderRemove}`} type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <p className={`${teamcss.imgCircle}`} id="profilefirstword" />
+                        {/* <section className={`${teamcss.logout} d-flex justify-content-between`}>
+                            <div className={`${teamcss.dropdown}`}>
+                                <button className={`${teamcss.borderRemove}`} type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    <p className={`${teamcss.imgCircle}`} id="profilefirstword">a</p>
                                 </button>
-                                <div className={`dropdown-menu`} aria-labelledby="dropdownMenuButton">
+                                <div className={`${teamcss.dropdownMenu}`} aria-labelledby="dropdownMenuButton">
                                     <b style={{ fontSize: '20px' }}>Sign in as: </b>
-                                    <p className={`info`} id="profilename" />
-                                    <p className={`info`} id="profileemail" />
-                                    <p className={`${teamcss.info} text-muted`} id="username" />
+                                    <p className={`${teamcss.info}`} id="profilename"></p>
+                                    <p className={`${teamcss.info}`} id="profileemail"></p>
+                                    <p className={`${teamcss.info} text-muted`} id="username"></p>
                                     <hr />
-                                    <button className={`${teamcss.dropdownItem} ${teamcss.logoutBtn}`} type="button" onClick="logout()">Logout</button>
+                                    <button className={`${teamcss.dropdownItem} ${teamcss.logoutBtn}`} type="button">Logout</button>
                                 </div>
                             </div>
-                            {/* <button onClick="logout()" class="btn btn-danger bi-text-right">LogOut</button> */}
-                        </section>
+                        </section> */}
+                        {/* <button onClick="logout()" class="btn btn-danger bi-text-right">LogOut</button> */}
                         <section className={`text-center my-2`}>
                             <h4>Teams you own</h4>
                         </section>
-                        <div className={`${teamcss.secondContainer} container`} id="createElement">
+                        <div className={`${teamcss.secondContainer} container`}>
+                            <fieldset className={`${teamcss.myteam} fw-normal text-start`}>
+                                <div className={`${teamcss.myteamcontent}`}>
+                                    <p className={`${teamcss.teamname}`} />
+                                    <hr />
+                                    <i> <p className={`${teamcss.member}`}>Members:</p></i>
+                                    <div className={`d-flex justify-content-between`}>
+                                        <ul className={`${teamcss.teammember}`}>
+                                        </ul>
+                                        <div className={`text-center`}>
+                                            <i data-bs-toggle="modal" data-bs-target="#staticBackdrop" style={{ cursor: 'pointer' }} className="bi bi-pencil-square pe-2" />
+                                            <i className="bi bi-gear-fill" style={{ cursor: 'pointer' }} />
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <p className={`${teamcss.teammember}`}><b>Category:</b></p>
+                                </div>
+                            </fieldset>
                         </div>
                         <div className={`d-flex justify-content-end`}>
-                            <button type="button" onClick="showinputmodalbox()" className={`btn btn-dark text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                            <AddIcon />
+                            <button type="button" className={`btn btn-dark text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                <i class="bi bi-plus-lg"></i>
                             </button>
                             &nbsp;&nbsp;&nbsp;
                             <button type="button" onDoubleClick="deleteall()" className={`btn btn-dark text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} title="DoubleTap to delete">
-                                <DeleteForeverIcon/>
+                                <i class="bi bi-trash"></i>
                             </button>
                         </div>
                         <hr />
@@ -45,6 +97,7 @@ const Teamhome = () => {
                             <h4>Teams you're part of</h4>
                         </section>
                         <div className={`${teamcss.secondContainer} container`} id="partteamElement">
+
                         </div>
                     </fieldset>
                 </div>
@@ -55,23 +108,23 @@ const Teamhome = () => {
                 {/* Modal */}
                 <div className={`modal fade`} id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div className={`modal-dialog modal-dialog-centered`}>
-                        <div className={`modal-content borderradius-remove`}>
+                        <div className={`modal-content ${teamcss.borderradiusRemove}`}>
                             <div className={`modal-header`}>
                                 <h5 className={`modal-title`} id="staticBackdropLabel">Modal title</h5>
                                 {/* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> */}
                             </div>
                             <div className={`modal-body`}>
                                 <form id="addingmemberform" className={`container`}>
-                                    <div className={`form-outline`}>
+                                    <div className={`${teamcss.formOutline}`}>
                                         <label htmlFor="teamnameinput" className={`form-label`}>Team Name</label>
-                                        <input type="email" className={`form-control ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} placeholder="Team Name" id="teamnameinput" aria-describedby="emailHelp" />
+                                        <input type="text" className={`form-control ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} placeholder="Team Name" onChange={teamName} aria-describedby="emailHelp" />
                                     </div>
                                     <input type="hidden" id="hiddeninput" />
                                     <br />
-                                    <div className={`form-outline`}>
+                                    <div className={`${teamcss.formOutline}`}>
                                         <label htmlFor="teamcatogeryinput" className={`form-label`}>Category</label>
-                                        <select id="teamcatogeryinput" className={`form-select ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} aria-label="Default select example">
-                                            <option value="Not selected" selected>Category</option>
+                                        <select className={`form-select ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} onChange={teamCategory} aria-label="Default select example">
+                                            <option value="">Category</option>
                                             <option value="Maintainence">Maintainence</option>
                                             <option value="Development">Development</option>
                                             <option value="Project Manager">Project Manager</option>
@@ -80,9 +133,9 @@ const Teamhome = () => {
                        aria-describedby="emailHelp"> */}
                                     </div>
                                     <br />
-                                    <div className={`form-outline`}>
+                                    <div className={`${teamcss.formOutline}`}>
                                         <label htmlFor="memberemailinput" className={`form-label`}>Member (type email)</label>
-                                        <input type="email" className={`form-control ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} id="memberemailinput" aria-describedby="emailHelp" />
+                                        <input type="email" className={`form-control ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} onChange={teamMember} aria-describedby="emailHelp" />
                                         <p className={`text-muted`}>
                                             Seperated By comas (<b style={{ fontSize: '22px' }}>,</b>)
                                         </p>
@@ -93,7 +146,7 @@ const Teamhome = () => {
                                 </form>
                             </div>
                             <div className={`modal-footer d-flex justify-content-center`}>
-                                <button type="button" id="createteamid" onClick="createteamdatastore(); createteam();" className={`btn btn-info text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-dismiss="modal">
+                                <button type="button" onClick={handleCreateTeam} className={`btn btn-info text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-dismiss="modal">
                                     Create
                                 </button>
                                 <button type="button" id="editteambutton" onClick="saveeditteam()" style={{ display: 'none' }} className={`btn btn-info text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-dismiss="modal">

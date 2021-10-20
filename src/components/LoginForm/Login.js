@@ -5,16 +5,18 @@ import login from "../../images/login.jpg"
 import { Link } from 'react-router-dom'
 import { LoginAuth } from '../Firebase/Authentication'
 import Firebaseconfig from '../Firebase/Firebaseconfig'
+import { useHistory } from "react-router-dom";
 
 
 const Login = () => {
+    let history = useHistory()
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showpass, setShowpass] = useState(false)
     const passwordref = useRef();
 
     const handleLogin = (e) => {
-        e.preventDefault(); Firebaseconfig(); LoginAuth(email, password);
+        e.preventDefault(); Firebaseconfig(); LoginAuth(email, password, history);
     }
 
     const showPassword = (e) => {

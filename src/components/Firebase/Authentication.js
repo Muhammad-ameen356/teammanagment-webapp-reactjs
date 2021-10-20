@@ -19,7 +19,7 @@ const Authentication = (email, password, history) => {
         });
 }
 
-const LoginAuth = (email, password) => {
+const LoginAuth = (email, password, history) => {
     const auth = getAuth();
 
     signInWithEmailAndPassword(auth, email, password)
@@ -27,7 +27,7 @@ const LoginAuth = (email, password) => {
             const user = userCredential.user;
             console.log(user);
             swal("Login Successfull")
-
+            history.push("/teamhome")
         })
         .catch((error) => {
             console.log(error.code);
