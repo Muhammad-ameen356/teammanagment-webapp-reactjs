@@ -1,10 +1,11 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import swal from 'sweetalert';
+import { auth } from '../Firebase/Firebaseconfig';
+
 
 
 const Authentication = (email, password, history) => {
     console.log(email, password);
-    const auth = getAuth();
 
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
@@ -20,7 +21,6 @@ const Authentication = (email, password, history) => {
 }
 
 const LoginAuth = (email, password, history) => {
-    const auth = getAuth();
 
     signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {

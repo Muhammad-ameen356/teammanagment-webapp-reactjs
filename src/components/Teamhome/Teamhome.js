@@ -1,42 +1,75 @@
-import React from 'react'
+import React, { useState } from 'react'
 import teamcss from "./Teamhome.module.css"
-import { getFirestore, collection, addDoc, doc, setDoc } from "firebase/firestore";
-import Firebaseconfig from '../Firebase/Firebaseconfig';
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, setDoc, collection, query, where, onSnapshot } from "firebase/firestore";
+import { auth, db } from '../Firebase/Firebaseconfig';
+import Createteam from './Createteam';
 
 
 const Teamhome = () => {
-    Firebaseconfig()
-    const db = getFirestore();
 
-    let teamname = "";
-    let teamcategory = "";
-    let teammember = "";
+    const [teamname, setTeamname] = useState("");
+    const [teamcategory, setTeamcategory] = useState("");
+    const [teammember, setTeammember] = useState("");
 
     const teamName = (e) => {
-        teamname = e.target.value;
+        setTeamname(e.target.value)
     }
     const teamCategory = (e) => {
-        teamcategory = e.target.value;
+        setTeamcategory(e.target.value)
     }
     const teamMember = (e) => {
-        teammember = e.target.value;
+        setTeammember(e.target.value)
     }
-    const handleCreateTeam = async () => {
-        // console.log(teamname, teamcategory, teammember);
+
+    const handleCreateTeam = () => {
+        console.log(teamname, teamcategory, teammember);
         const date = new Date().getTime().toString();
-        console.log(date);
         const commaseprate = teammember.split(',');
-        await setDoc(doc(db, "team", date), {
-            teamname: teamname,
-            teamcategory: teamcategory,
-            teammember: commaseprate,
-            docid: date,
-        }).then(() => {
-            console.log("Document successfully written!",);
-        }).catch((error) => {
-            console.error("Error writing document: ", error);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const uid = user.uid;
+                const email = user.email
+
+                await setDoc(doc(db, "team", date), {
+                    teamname: teamname,
+                    teamcategory: teamcategory,
+                    teammember: commaseprate,
+                    docId: date,
+                    userId: uid,
+                    adminEmail: email,
+                }).then(() => {
+                    console.log("Document successfully written!");
+                    setTeamname(''); setTeamcategory(''); setTeammember('');
+                }).catch((error) => {
+                    console.error("Error writing document: ", error);
+                });
+            } else {
+                console.log("User is Signout");
+            }
         });
     }
+    // onAuthStateChanged(auth, async (user) => {
+    //     if (user) {
+    //         const uid = user.uid;
+    //         const q = query(collection(db, "team"), where("userId", "==", uid));
+    //         const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    //             const cities = [];
+    //             querySnapshot.forEach((doc) => {
+    //                 const name = doc.data().teamname;
+    //                 cities.push(name);
+    //                 // cities.push(doc.data().teamname);
+    //             })
+    //             // console.log("Current cities in CA: ", cities.join(", "));
+    //             // console.log(cities);
+    //             Createteam(cities)
+    //         });
+    //     } else {
+    //         console.log("User is Signout");
+    //     }
+    // });
+
 
     return (
         <div>
@@ -60,36 +93,18 @@ const Teamhome = () => {
                                 </div>
                             </div>
                         </section> */}
-                        {/* <button onClick="logout()" class="btn btn-danger bi-text-right">LogOut</button> */}
+                        {/* <button onClick="logout()" className="btn btn-danger bi-text-right">LogOut</button> */}
                         <section className={`text-center my-2`}>
                             <h4>Teams you own</h4>
                         </section>
-                        <div className={`${teamcss.secondContainer} container`}>
-                            <fieldset className={`${teamcss.myteam} fw-normal text-start`}>
-                                <div className={`${teamcss.myteamcontent}`}>
-                                    <p className={`${teamcss.teamname}`} />
-                                    <hr />
-                                    <i> <p className={`${teamcss.member}`}>Members:</p></i>
-                                    <div className={`d-flex justify-content-between`}>
-                                        <ul className={`${teamcss.teammember}`}>
-                                        </ul>
-                                        <div className={`text-center`}>
-                                            <i data-bs-toggle="modal" data-bs-target="#staticBackdrop" style={{ cursor: 'pointer' }} className="bi bi-pencil-square pe-2" />
-                                            <i className="bi bi-gear-fill" style={{ cursor: 'pointer' }} />
-                                        </div>
-                                    </div>
-                                    <hr />
-                                    <p className={`${teamcss.teammember}`}><b>Category:</b></p>
-                                </div>
-                            </fieldset>
-                        </div>
+                        <Createteam/>
                         <div className={`d-flex justify-content-end`}>
                             <button type="button" className={`btn btn-dark text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                <i class="bi bi-plus-lg"></i>
+                                <i className="bi bi-plus-lg"></i>
                             </button>
                             &nbsp;&nbsp;&nbsp;
                             <button type="button" onDoubleClick="deleteall()" className={`btn btn-dark text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} title="DoubleTap to delete">
-                                <i class="bi bi-trash"></i>
+                                <i className="bi bi-trash"></i>
                             </button>
                         </div>
                         <hr />
@@ -102,7 +117,7 @@ const Teamhome = () => {
                     </fieldset>
                 </div>
                 {/* Button trigger modal */}
-                {/* <button type="button" class="btn btn-dark text-white shadow-remove" onClick="createteam()" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                {/* <button type="button" className="btn btn-dark text-white shadow-remove" onClick="createteam()" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
   Add
     </button> */}
                 {/* Modal */}
@@ -111,35 +126,35 @@ const Teamhome = () => {
                         <div className={`modal-content ${teamcss.borderradiusRemove}`}>
                             <div className={`modal-header`}>
                                 <h5 className={`modal-title`} id="staticBackdropLabel">Modal title</h5>
-                                {/* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> */}
+                                {/* <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> */}
                             </div>
                             <div className={`modal-body`}>
                                 <form id="addingmemberform" className={`container`}>
                                     <div className={`${teamcss.formOutline}`}>
                                         <label htmlFor="teamnameinput" className={`form-label`}>Team Name</label>
-                                        <input type="text" className={`form-control ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} placeholder="Team Name" onChange={teamName} aria-describedby="emailHelp" />
+                                        <input type="text" className={`form-control ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} placeholder="Team Name" value={teamname} onChange={teamName} aria-describedby="emailHelp" />
                                     </div>
                                     <input type="hidden" id="hiddeninput" />
                                     <br />
                                     <div className={`${teamcss.formOutline}`}>
                                         <label htmlFor="teamcatogeryinput" className={`form-label`}>Category</label>
-                                        <select className={`form-select ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} onChange={teamCategory} aria-label="Default select example">
+                                        <select className={`form-select ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} value={teamcategory} onChange={teamCategory} aria-label="Default select example">
                                             <option value="">Category</option>
                                             <option value="Maintainence">Maintainence</option>
                                             <option value="Development">Development</option>
                                             <option value="Project Manager">Project Manager</option>
                                         </select>
-                                        {/* <input type="email" class="form-control shadow-remove" placeholder="Category"
+                                        {/* <input type="email" className="form-control shadow-remove" placeholder="Category"
                        aria-describedby="emailHelp"> */}
                                     </div>
                                     <br />
                                     <div className={`${teamcss.formOutline}`}>
                                         <label htmlFor="memberemailinput" className={`form-label`}>Member (type email)</label>
-                                        <input type="email" className={`form-control ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} onChange={teamMember} aria-describedby="emailHelp" />
+                                        <input type="email" className={`form-control ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} value={teammember} onChange={teamMember} aria-describedby="emailHelp" />
                                         <p className={`text-muted`}>
                                             Seperated By comas (<b style={{ fontSize: '22px' }}>,</b>)
                                         </p>
-                                        {/* <button type="button" onClick="addmember()" class="btn btn-danger rounded-0 mt-3">
+                                        {/* <button type="button" onClick="addmember()" className="btn btn-danger rounded-0 mt-3">
                           Add Member
                       </button> */}
                                     </div>
