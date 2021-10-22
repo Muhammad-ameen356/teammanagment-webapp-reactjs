@@ -1,10 +1,11 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import swal from 'sweetalert';
 import { auth } from '../Firebase/Firebaseconfig';
 
 
 
 const Authentication = (email, password, history) => {
+    
     console.log(email, password);
 
     createUserWithEmailAndPassword(auth, email, password)
@@ -42,5 +43,7 @@ const LoginAuth = (email, password, history) => {
             // swal(error.message);
         });
 }
+
+
 
 export { Authentication, LoginAuth }

@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import teamcss from "./Teamhome.module.css"
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, setDoc, collection, query, where, onSnapshot } from "firebase/firestore";
-import { auth, db } from '../Firebase/Firebaseconfig';
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db, stateChange } from '../Firebase/Firebaseconfig';
 import Createteam from './Createteam';
+import Profilemenu from '../Profilemenu/Profilemenu';
 
 
 const Teamhome = () => {
@@ -27,7 +28,7 @@ const Teamhome = () => {
         const date = new Date().getTime().toString();
         const commaseprate = teammember.split(',');
 
-        onAuthStateChanged(auth, async (user) => {
+        stateChange(auth, async (user) => {
             if (user) {
                 const uid = user.uid;
                 const email = user.email
@@ -50,26 +51,6 @@ const Teamhome = () => {
             }
         });
     }
-    // onAuthStateChanged(auth, async (user) => {
-    //     if (user) {
-    //         const uid = user.uid;
-    //         const q = query(collection(db, "team"), where("userId", "==", uid));
-    //         const unsubscribe = onSnapshot(q, (querySnapshot) => {
-    //             const cities = [];
-    //             querySnapshot.forEach((doc) => {
-    //                 const name = doc.data().teamname;
-    //                 cities.push(name);
-    //                 // cities.push(doc.data().teamname);
-    //             })
-    //             // console.log("Current cities in CA: ", cities.join(", "));
-    //             // console.log(cities);
-    //             Createteam(cities)
-    //         });
-    //     } else {
-    //         console.log("User is Signout");
-    //     }
-    // });
-
 
     return (
         <div>
@@ -94,10 +75,11 @@ const Teamhome = () => {
                             </div>
                         </section> */}
                         {/* <button onClick="logout()" className="btn btn-danger bi-text-right">LogOut</button> */}
-                        <section className={`text-center my-2`}>
-                            <h4>Teams you own</h4>
+                        
+                        <section className={`text-center`}>
+                        <Profilemenu/>  <h4>Teams you own</h4>
                         </section>
-                        <Createteam/>
+                        <Createteam />
                         <div className={`d-flex justify-content-end`}>
                             <button type="button" className={`btn btn-dark text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                 <i className="bi bi-plus-lg"></i>

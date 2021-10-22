@@ -6,6 +6,7 @@ import { Switch, Route } from "react-router-dom";
 import Error from './components/Errorpage/Error';
 import Teamhome from './components/Teamhome/Teamhome';
 import Createteam from './components/Teamhome/Createteam';
+import Profilemenu from './components/Profilemenu/Profilemenu';
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/login" component={Login} />
         <Route path="/teamhome" component={Teamhome} />
         <Route path="/createteam" component={Createteam} />
+        <Route path="/profile" component={Profilemenu} />
         <Route component={Error} />
       </Switch>
     </div>
