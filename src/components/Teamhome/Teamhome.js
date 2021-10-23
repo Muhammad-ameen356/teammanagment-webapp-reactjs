@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 import teamcss from "./Teamhome.module.css"
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { auth, db, stateChange } from '../Firebase/Firebaseconfig';
 import Createteam from './Createteam';
 import Profilemenu from '../Profilemenu/Profilemenu';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
+import swal from 'sweetalert';
 
 
 const Teamhome = () => {
@@ -13,14 +16,24 @@ const Teamhome = () => {
     const [teamcategory, setTeamcategory] = useState("");
     const [teammember, setTeammember] = useState("");
 
+
     const teamName = (e) => {
+
         setTeamname(e.target.value)
     }
     const teamCategory = (e) => {
         setTeamcategory(e.target.value)
+
     }
     const teamMember = (e) => {
-        setTeammember(e.target.value)
+        let value = e.target.value;
+        if (value.indexOf(" ") !== -1) {
+            swal("Space Not allow")
+            // let name = value.substring(0, value.length - 2)
+            // setTeammember(name)
+        } else {
+            setTeammember(e.target.value)
+        }
     }
 
     const handleCreateTeam = () => {
@@ -51,6 +64,24 @@ const Teamhome = () => {
             }
         });
     }
+    const editteam = (edname, edcategory, edmember) => {
+        console.log("edit team click");
+        setTeamname(edname)
+        setTeamcategory(edcategory)
+        setTeammember(edmember)
+    }
+
+    const handleEditSave = async () => {
+        const id = localStorage.getItem("docid")
+        const commaseprate = teammember.split(',');
+
+        const refForupdate = doc(db, "team", id);
+        await updateDoc(refForupdate, {
+            teamname: teamname,
+            teamcategory: teamcategory,
+            teammember: commaseprate
+        });
+    }
 
     return (
         <div>
@@ -75,11 +106,11 @@ const Teamhome = () => {
                             </div>
                         </section> */}
                         {/* <button onClick="logout()" className="btn btn-danger bi-text-right">LogOut</button> */}
-                        
+
                         <section className={`text-center`}>
-                        <Profilemenu/>  <h4>Teams you own</h4>
+                            <Profilemenu />  <h4>Teams you own</h4>
                         </section>
-                        <Createteam />
+                        <Createteam ed={editteam} />
                         <div className={`d-flex justify-content-end`}>
                             <button type="button" className={`btn btn-dark text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                 <i className="bi bi-plus-lg"></i>
@@ -146,10 +177,10 @@ const Teamhome = () => {
                                 <button type="button" onClick={handleCreateTeam} className={`btn btn-info text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-dismiss="modal">
                                     Create
                                 </button>
-                                <button type="button" id="editteambutton" onClick="saveeditteam()" style={{ display: 'none' }} className={`btn btn-info text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-dismiss="modal">
+                                <button type="button" onClick={handleEditSave} className={`btn btn-info text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-dismiss="modal">
                                     Edit
                                 </button>
-                                <button type="button" id="cancelbutton" className={`btn btn-warning text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-dismiss="modal">
+                                <button type="button" className={`btn btn-warning text-white ${teamcss.shadowRemove} ${teamcss.borderradiusRemove}`} data-bs-dismiss="modal">
                                     Cancel
                                 </button>
                             </div>

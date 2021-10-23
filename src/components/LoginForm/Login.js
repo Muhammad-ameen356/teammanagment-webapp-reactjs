@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom'
 import { LoginAuth } from '../Firebase/Authentication'
 import { useHistory } from "react-router-dom";
 
-
 const Login = () => {
     let history = useHistory()
     const [email, setEmail] = useState('');
